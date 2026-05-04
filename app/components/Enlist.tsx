@@ -1,11 +1,62 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ScrollReveal from "./ScrollReveal";
 import MagneticButton from "./MagneticButton";
-import TextScramble from "./TextScramble";
+
+const GUILD_ID = "1457044306899501060";
+const WS_URL = "wss://nyx.gowth.tech/ws";
+
+interface ServerStats {
+  total: number;
+  online: number;
+  idle: number;
+  dnd: number;
+  offline: number;
+}
+
+function useServerStats() {
+  const [stats, setStats] = useState<ServerStats | null>(null);
+
+  useEffect(() => {
+    const ws = new WebSocket(WS_URL);
+    let closed = false;
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: "stats", guildId: GUILD_ID }));
+    };
+
+    ws.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        if ((msg.type === "stats" || msg.type === "stats_update") && typeof msg.total === "number") {
+          setStats({
+            total: msg.total,
+            online: msg.online,
+            idle: msg.idle,
+            dnd: msg.dnd,
+            offline: msg.offline,
+          });
+        }
+      } catch {}
+    };
+
+    ws.onerror = () => {};
+
+    return () => {
+      closed = true;
+      ws.close();
+    };
+  }, []);
+
+  return stats;
+}
 
 export default function Enlist() {
+  const stats = useServerStats();
+  const activeCount = stats ? stats.online + stats.idle + stats.dnd : 0;
+
   return (
     <section id="enlist" className="py-24 px-8 relative">
       <ScrollReveal>
@@ -18,9 +69,20 @@ export default function Enlist() {
             <span className="font-mono text-[10px] font-bold tracking-[0.15em] uppercase text-on-surface-variant/40">
               // JOIN US
             </span>
-            <span className="font-mono text-[10px] font-bold tracking-[0.15em] uppercase text-primary-container/60">
-              <TextScramble text="STATUS: ACTIVE" speed={40} />
-            </span>
+            {stats && (
+              <div className="flex items-center gap-4 font-mono text-[10px] font-bold tracking-[0.1em] uppercase">
+                <span className="text-on-surface-variant/40">
+                  {stats.total} members
+                </span>
+                <span className="flex items-center gap-1.5 text-green-500/70">
+                  <span className="relative">
+                    <span className="block w-1.5 h-1.5 rounded-full bg-green-500" />
+                    <span className="absolute inset-0 w-1.5 h-1.5 rounded-full bg-green-500 animate-ping opacity-60" />
+                  </span>
+                  {activeCount} online
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Main content */}
@@ -35,7 +97,7 @@ export default function Enlist() {
               don&apos;t fold under pressure.
             </p>
 
-            {/* Requirements — inline, compact */}
+            {/* Requirements */}
             <div className="flex flex-wrap justify-center gap-3 mb-12">
               {["Active in HBG", "Respect the code", "Back your clan"].map(
                 (req) => (
@@ -49,7 +111,7 @@ export default function Enlist() {
               )}
             </div>
 
-            {/* Steps — minimal horizontal flow */}
+            {/* Steps */}
             <div className="flex justify-center items-center gap-3 mb-12 font-mono text-[10px] font-bold tracking-[0.1em] uppercase text-on-surface-variant/50">
               <span>Join Discord</span>
               <span className="text-primary-container">→</span>
