@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import BootSequence from "./components/BootSequence";
-import CircleCursor from "./components/CircleCursor";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import OurQuirk from "./components/OurQuirk";
@@ -17,7 +16,15 @@ export default function Home() {
   const [booted, setBooted] = useState(false);
 
   const handleBootComplete = useCallback(() => {
+    sessionStorage.setItem("nyxari-booted", "1");
     setBooted(true);
+  }, []);
+
+  // Skip preloader if already seen this session
+  useEffect(() => {
+    if (sessionStorage.getItem("nyxari-booted")) {
+      setBooted(true);
+    }
   }, []);
 
   // Safety net
@@ -29,7 +36,6 @@ export default function Home() {
   return (
     <>
       {!booted && <BootSequence onComplete={handleBootComplete} />}
-      <CircleCursor />
 
       {booted && (
         <div className="animate-[fadeIn_400ms_ease-out]">

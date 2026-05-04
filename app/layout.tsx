@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Epilogue, Manrope, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import CircleCursor from "./components/CircleCursor";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -39,7 +40,10 @@ export default function RootLayout({
       lang="en"
       className={cn("dark", epilogue.variable, manrope.variable, spaceGrotesk.variable, "font-mono", jetbrainsMono.variable)}
     >
-      <body className="min-h-screen noise-bg">{children}</body>
+      <body className="min-h-screen noise-bg">
+        <CircleCursor />
+        {children}
+      </body>
     </html>
   );
 }

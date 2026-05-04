@@ -6,32 +6,32 @@ import type { FocusCard } from "@/components/ui/focus-cards";
 const galleryCards: FocusCard[] = [
   {
     title: "Epic Moment",
-    src: "/gallery/img-1.png",
+    src: "/gallery/img-1.webp",
     label: "CLASSIFIED // NXR",
   },
   {
     title: "Epic Moment",
-    src: "/gallery/img-2.png",
+    src: "/gallery/img-2.webp",
     label: "CLASSIFIED // NXR",
   },
   {
     title: "Epic Moment",
-    src: "/gallery/img-3.png",
+    src: "/gallery/img-3.webp",
     label: "CLASSIFIED // NXR",
   },
   {
     title: "Epic Moment",
-    src: "/gallery/img-4.png",
+    src: "/gallery/img-4.webp",
     label: "CLASSIFIED // NXR",
   },
   {
     title: "Epic Moment",
-    src: "/gallery/img-5.png",
+    src: "/gallery/img-5.webp",
     label: "CLASSIFIED // NXR",
   },
   {
     title: "Epic Moment",
-    src: "/gallery/img-6.png",
+    src: "/gallery/img-6.webp",
     label: "CLASSIFIED // NXR",
   },
 ];
