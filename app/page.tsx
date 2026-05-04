@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import BootSequence from "./components/BootSequence";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import OurQuirk from "./components/OurQuirk";
@@ -9,17 +13,35 @@ import Enlist from "./components/Enlist";
 import Footer from "./components/Footer";
 
 export default function Home() {
+  const [booted, setBooted] = useState(false);
+
+  const handleBootComplete = useCallback(() => {
+    setBooted(true);
+  }, []);
+
+  // Safety net
+  useEffect(() => {
+    const fallback = setTimeout(() => setBooted(true), 7000);
+    return () => clearTimeout(fallback);
+  }, []);
+
   return (
     <>
-      <Navbar />
-      <Hero />
-      <OurQuirk />
-      <Operations />
-      <Gallery />
-      <Rankings />
-      <Pantheon />
-      <Enlist />
-      <Footer />
+      {!booted && <BootSequence onComplete={handleBootComplete} />}
+
+      {booted && (
+        <div className="animate-[fadeIn_400ms_ease-out]">
+          <Navbar />
+          <Hero />
+          <OurQuirk />
+          <Operations />
+          <Gallery />
+          <Rankings />
+          <Pantheon />
+          <Enlist />
+          <Footer />
+        </div>
+      )}
     </>
   );
 }
